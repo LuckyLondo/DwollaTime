@@ -10,40 +10,35 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class TimeControllerTest {
 
-    private static ObjectMapper objectMapper;
-    private static Time withoutOffset;
-    private static Time withPlusTwoOffset;
-    private static Time withMinusTwoOffset;
     private static Instant testInstant;
     private static Instant plusTwoHours;
     private static Instant minusTwoHours;
 
     @BeforeAll
     public static void setUp() throws IOException {
-        objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
 
         objectMapper = JsonMapper.builder()
                 .findAndAddModules()
                 .build();
 
-        withoutOffset = objectMapper
+        Time withoutOffset = objectMapper
                 .readValue(
                         new File("src/test/resources/withoutOffset.json"),
                         Time.class);
 
-        withPlusTwoOffset = objectMapper
+        Time withPlusTwoOffset = objectMapper
                 .readValue(
                         new File("src/test/resources/withPlusTwoOffset.json"),
                         Time.class);
 
-        withMinusTwoOffset = objectMapper
+        Time withMinusTwoOffset = objectMapper
                 .readValue(
                         new File("src/test/resources/withMinusTwoOffset.json"),
                         Time.class);
@@ -59,12 +54,11 @@ public class TimeControllerTest {
     @Test
     public void test_withBlankPostiveOffset()
     {
-        Optional<String> empty = Optional.empty();
         Time testTime = new Time(testInstant, String.valueOf(" 02:00")); //Plus stripped off in browser
 
         assertEquals(testTime.getCurrentTime(), testInstant.toString());
         assertEquals(testTime.getAdjustedTime().isPresent(), true);
-        assertEquals(testTime.getAdjustedTime().get() + "Z", plusTwoHours.toString());
+        assertEquals(testTime.getAdjustedTime(). orElse(null) + "Z", plusTwoHours.toString());
     }
 
     @Test
@@ -74,7 +68,7 @@ public class TimeControllerTest {
 
         assertEquals(testTime.getCurrentTime(), testInstant.toString());
         assertEquals(testTime.getAdjustedTime().isPresent(), true);
-        assertEquals(testTime.getAdjustedTime().get() + "Z", plusTwoHours.toString());
+        assertEquals(testTime.getAdjustedTime(). orElse(null) + "Z", plusTwoHours.toString());
     }
 
     @Test
@@ -84,7 +78,7 @@ public class TimeControllerTest {
 
         assertEquals(testTime.getCurrentTime(), testInstant.toString());
         assertEquals(testTime.getAdjustedTime().isPresent(), true);
-        assertEquals(testTime.getAdjustedTime().get()  + "Z", minusTwoHours.toString());
+        assertEquals(testTime.getAdjustedTime(). orElse(null)  + "Z", minusTwoHours.toString());
     }
 
     @Test
